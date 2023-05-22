@@ -1,10 +1,16 @@
 package com.estudo.dscatalog.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 //Serializable serve para transformar o objeto em bytes e conseguir passá-lo na rede.
+@Entity
+@Table(name="category")
 public class Category implements Serializable {
+    @Id
+    //Id incrementável
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
