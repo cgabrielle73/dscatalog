@@ -1,4 +1,4 @@
-insert into category(name) values ('Books');
-insert into category(name) values ('Eletronics');
-insert into category(name) values ('Computers');
-insert into category(name) values ('Pets');
+insert into category(name, created_At) values ('Books', NOW());
+insert into category(name, created_At) values ('Eletronics', NOW());
+insert into category(name, created_At) values ('Computers', NOW());
+insert into category(name, created_At) values ('Pets', NOW());
