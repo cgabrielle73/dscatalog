@@ -8,6 +8,8 @@ import com.estudo.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +26,9 @@ public class CategoryService {
 
     //Garante a transação do banco
     @Transactional(readOnly = true)
-    public List<CategoryDTO> findAll() {
-        List<Category> categories = categoryRepository.findAll();
-        return categories.stream().map(cat -> new CategoryDTO(cat)).collect(Collectors.toList());
+    public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
+        Page<Category> categories = categoryRepository.findAll(pageRequest);
+        return categories.map(cat -> new CategoryDTO(cat));
     };
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
