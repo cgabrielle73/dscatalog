@@ -38,7 +38,7 @@ public class ProductDTO implements Serializable {
         this.date = product.getDate();
     }
 
-    public ProductDTO(Set<Category> categories, Product product) {
+    public ProductDTO(Product product, Set<Category> categories) {
         this(product);
         categories.forEach(category -> this.categories.add(new CategoryDTO(category)));
     }

@@ -1,8 +1,8 @@
 package com.estudo.dscatalog.services;
 
-import com.estudo.dscatalog.dto.CategoryDTO;
-import com.estudo.dscatalog.entities.Category;
-import com.estudo.dscatalog.repositories.CategoryRepository;
+import com.estudo.dscatalog.dto.ProductDTO;
+import com.estudo.dscatalog.entities.Product;
+import com.estudo.dscatalog.repositories.ProductRepository;
 import com.estudo.dscatalog.services.exceptions.DatabaseException;
 import com.estudo.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,49 +18,49 @@ import java.util.Optional;
 
 // Registra como um componente que participa do sistema de injeção de dependencia automatizado do spring.
 @Service
-public class CategoryService {
+public class ProductService {
     @Autowired
-    private CategoryRepository categoryRepository;
+    private ProductRepository productRepository;
 
     //Garante a transação do banco
     @Transactional(readOnly = true)
-    public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
-        Page<Category> categories = categoryRepository.findAll(pageRequest);
-        return categories.map(cat -> new CategoryDTO(cat));
+    public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
+        Page<Product> products = productRepository.findAll(pageRequest);
+        return products.map(prod -> new ProductDTO(prod));
     };
     @Transactional(readOnly = true)
-    public CategoryDTO findById(Long id) {
+    public ProductDTO findById(Long id) {
         //Optional: para nunca ter valor nulo. Mas dentro dele, pode ou não ter categorias
-        Optional<Category> obj = categoryRepository.findById(id);
-        Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-        return new CategoryDTO(entity);
+        Optional<Product> obj = productRepository.findById(id);
+        Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+        return new ProductDTO(entity, entity.getCategories());
 
     };
 
     @Transactional
-    public CategoryDTO insert(CategoryDTO categoryDto) {
-        Category category = new Category();
-        category.setName(categoryDto.getName());
-        category = categoryRepository.save(category);
-        return new CategoryDTO(category);
+    public ProductDTO insert(ProductDTO productDTO) {
+        Product product = new Product();
+//        product.setName(productDTO.getName());
+        product = productRepository.save(product);
+        return new ProductDTO(product);
     };
 
     @Transactional
-    public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
+    public ProductDTO update(Long id, ProductDTO productDTO) {
         try {
             //Não toca no banco de dados. Instancia um objeto provisório com os dados. Após mandar salvar, que ele bate no banco e salva os dados
-            Category category = categoryRepository.getReferenceById(id);
-            category.setName(categoryDTO.getName());
-            category = categoryRepository.save(category);
-            return new CategoryDTO(category);
+            Product product = productRepository.getReferenceById(id);
+//            product.setName(productDTO.getName());
+            product = productRepository.save(product);
+            return new ProductDTO(product);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id not found " + id);
         }
     };
 
-    public void deleteCategory(Long id) {
+    public void deleteProduct(Long id) {
         try {
-            categoryRepository.deleteById(id);
+            productRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("Id not found " + id);
         } catch(DataIntegrityViolationException e) {
